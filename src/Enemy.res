@@ -1,11 +1,11 @@
-module Canvas = ReasonJs.Canvas2d;
+module Canvas = Canvas2d
 
 module V = Vector;
 
 type t = {
   position: (float, float),
   velocity: (float, float),
-  diedAt: option(float),
+  diedAt: option<float>,
   rotation: float /* radians */
 };
 
@@ -39,25 +39,25 @@ let drawExplosion = (ctx, deathTime, now) => {
     let distance = radius *. Js.Math.sin(float_of_int(particleIdx) +. deathTime);
     let size = 0.002 *. (deathAnimationDuration -. (now -. deathTime));
     let (x, y) = (distance *. Js.Math.sin(theta), distance *. Js.Math.cos(theta));
-    ctx |> Canvas.fillRect(~x, ~y, ~w=size, ~h=size)
+    ctx -> Canvas2d.fillRect(~x, ~y, ~w=size, ~h=size);
   }
 };
 
 let draw = (ctx, {position: (x, y), rotation, diedAt}) => {
   let now = Js.Date.now();
-  ctx |> Canvas.save;
+  ctx -> Canvas.save;
   Canvas.strokeStyle(ctx, "white");
-  ctx |> Canvas.translate(~x, ~y);
+  ctx -> Canvas.translate(~x, ~y);
   switch diedAt {
   | Some(deathTime) when now > deathTime +. deathAnimationDuration => ()
   | Some(deathTime) => drawExplosion(ctx, deathTime, now)
   | None =>
-    ctx |> Canvas.rotate(_PI /. 4. -. rotation);
-    ctx |> Canvas.strokeRect(~x=(-1.) *. halfSize, ~y=(-1.) *. halfSize, ~w=size, ~h=size);
-    ctx |> Canvas.rotate(_PI /. 4. -. rotation);
-    ctx |> Canvas.strokeRect(~x=(-1.) *. halfSize, ~y=(-1.) *. halfSize, ~w=size, ~h=size)
-  };
-  ctx |> Canvas.restore
+    ctx -> Canvas.rotate(_PI /. 4. -. rotation)
+    ctx -> Canvas.strokeRect(~x=(-1.) *. halfSize, ~y=(-1.) *. halfSize, ~w=size, ~h=size)
+    ctx -> Canvas.rotate(_PI /. 4. -. rotation)
+    ctx -> Canvas.strokeRect(~x=(-1.) *. halfSize, ~y=(-1.) *. halfSize, ~w=size, ~h=size)
+  }
+  ctx -> Canvas.restore
 };
 
 let cull = (_, height, enemies) =>
@@ -76,8 +76,8 @@ let spawnNew = (stage) => {
 let managePopulation = (startTime, enemies) => {
   let timeSinceStart = int_of_float(Js.Date.now() -. startTime);
   let stage = timeSinceStart / 6000;
-  let shouldSpawn = timeSinceStart mod max(20 - stage, 2) === 0;
-  shouldSpawn ? List.append(enemies, [spawnNew(stage)]) : enemies
+  let shouldSpawn = mod(timeSinceStart, max(20 - stage, 2)) === 0;
+  shouldSpawn ? List.append(enemies, list{spawnNew(stage)}) : enemies
 };
 
 /* Check collision of two circles */

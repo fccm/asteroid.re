@@ -1,4 +1,4 @@
-[@bs.get] external eventKey : 'a => string = "key";
+@get external eventKey : 'a => string = "key";
 
 let withDefault = (fallback, input) =>
   switch input {
@@ -14,17 +14,17 @@ type cmd =
   | ShipShoot;
 
 type keyState = {
-  mutable left: option(int),
-  mutable right: option(int),
-  mutable up: option(int),
-  mutable down: option(int),
+  mutable left: option<int>,
+  mutable right: option<int>,
+  mutable up: option<int>,
+  mutable down: option<int>,
   mutable space: bool
 };
 
 let currentState = {left: None, right: None, up: None, down: None, space: false};
 
 let keydownListener = (evt) => {
-  EventRe.preventDefault(evt);
+  Canvas2d.preventDefault(evt);
   switch (eventKey(evt)) {
   | "ArrowLeft" => currentState.left = Some(withDefault(1, currentState.left))
   | "ArrowRight" => currentState.right = Some(withDefault(1, currentState.right))
@@ -46,9 +46,8 @@ let keyupListener = (evt) =>
   };
 
 let bindListeners = () => {
-  open ReasonJs.Dom;
-  DocumentRe.addEventListener("keydown", (evt) => keydownListener(evt), document);
-  DocumentRe.addEventListener("keyup", (evt) => keyupListener(evt), document)
+  Canvas2d.addEventListener(Canvas2d.window, "keydown", (evt) => keydownListener(evt), false)
+  Canvas2d.addEventListener(Canvas2d.window, "keyup", (evt) => keyupListener(evt), false)
 };
 
 let sample = () => {
@@ -62,18 +61,18 @@ let sample = () => {
   | {right: Some(n)} => currentState.right = Some(n + 1)
   | _ => ()
   };
-  let spaceList = currentState.space ? [ShipShoot] : [];
+  let spaceList = currentState.space ? list{ShipShoot} : list{};
   let xCmdList =
     switch currentState {
-    | {left: Some(n), right: None} => [ShipLeft(n)]
-    | {right: Some(n), left: None} => [ShipRight(n)]
-    | _ => []
+    | {left: Some(n), right: None} => list{ShipLeft(n)}
+    | {right: Some(n), left: None} => list{ShipRight(n)}
+    | _ => list{}
     };
   let yCmdList =
     switch currentState {
-    | {up: Some(n), down: None} => [ShipUp(n)]
-    | {down: Some(n), up: None} => [ShipDown(n)]
-    | _ => []
+    | {up: Some(n), down: None} => list{ShipUp(n)}
+    | {down: Some(n), up: None} => list{ShipDown(n)}
+    | _ => list{}
     };
-  List.concat([xCmdList, yCmdList, spaceList])
+  List.concat(list{xCmdList, yCmdList, spaceList})
 };

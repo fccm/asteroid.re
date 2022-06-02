@@ -1,9 +1,9 @@
-open ReasonJs.Storage;
+open Dom.Storage2;
 
 let _KEY = "hiScore";
 
 let get = () => {
-  let score = localStorage |> getItem(_KEY);
+  let score = localStorage -> getItem(_KEY);
   switch score {
   | Some(x) => int_of_string(x)
   | None => 0
@@ -12,5 +12,5 @@ let get = () => {
 
 let set = (score) => {
   let currentHi = get();
-  score > currentHi ? localStorage |> setItem(_KEY, string_of_int(score)) : ()
+  score > currentHi ? localStorage -> setItem(_KEY, string_of_int(score)) : ()
 };

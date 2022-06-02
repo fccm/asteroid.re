@@ -1,8 +1,6 @@
-module ReasonJs = ReasonJs;
-
 module V = Vector;
 
-module Canvas = ReasonJs.Canvas2d;
+module Canvas = Canvas2d;
 
 module StarField = StarField;
 
@@ -22,7 +20,7 @@ type gamePhase =
 type state = {
   mutable phase: gamePhase,
   mutable ship: Ship.t,
-  mutable enemies: list(Enemy.t),
+  mutable enemies: list<Enemy.t>,
   mutable score: int,
   startTime: float
 };
@@ -30,13 +28,13 @@ type state = {
 let gameState = {
   phase: TitleScreen,
   ship: Ship.initialState,
-  enemies: [],
+  enemies: list{},
   score: 0,
   startTime: Js.Date.now()
 };
 
 let setupDraw = (canvas) => {
-  let ctx = ReasonJs.CanvasElement.getContext2d(canvas) |> Ui.init;
+  let ctx = Canvas.getContext(canvas, "2d") |> Ui.init;
   let rec render = (_) => {
     let now = Js.Date.now();
     let elapsedTime = now -. gameState.startTime;
@@ -51,9 +49,9 @@ let setupDraw = (canvas) => {
       Ui.drawScores(gameState.score, ctx)
     | GameOver => Ui.drawGameOver(gameState.score, ctx)
     };
-    ReasonJs.requestAnimationFrame(render)
+    let _ = Canvas.requestAnimationFrame(Canvas.window, render)
   };
-  let _ = ReasonJs.requestAnimationFrame(render);
+  let _ = Canvas.requestAnimationFrame(Canvas.window, render);
   ()
 };
 
@@ -80,8 +78,8 @@ let gameLoop = () => {
 };
 
 let startOnAnyKey = () =>
-  ReasonJs.Dom.(
-    DocumentRe.addEventListener(
+  Canvas.addEventListener(
+      Canvas.window,
       "keydown",
       (_) =>
         switch gameState.phase {
@@ -89,20 +87,16 @@ let startOnAnyKey = () =>
         | GameOver
         | Level => ()
         },
-      document
+      false
     )
-  );
 
 let init = () => {
-  open ReasonJs.Dom;
-  let canvasEl = DocumentRe.querySelector("canvas", document);
-  switch canvasEl {
-  | Some(canv) => setupDraw(canv)
-  | None => Js.log("couldnt get canvas")
-  };
+  let canvas = Canvas.querySelector(Canvas.document, "canvas");
+  setupDraw(canvas);
   Input.bindListeners();
   startOnAnyKey();
-  Js.Global.setInterval(gameLoop, 33)
+  let _ = Js.Global.setInterval(gameLoop, 33)
+  ()
 };
 
 init();
