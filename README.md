@@ -1,16 +1,19 @@
 # shmup.re
 
-In which I attempt to learn [ReasonML](https://facebook.github.io/reason) by making a simple canvas game. [Play it online](http://aaronfranks.com/shmup.re)
+In which I attempt to learn [ReScript](https://rescript-lang.org/) by making a simple canvas game.
+[Play it online](https://fccm.github.io/shmup.re/)
 
-[![screenshot](./assets/screenshot.png)](http://aaronfranks.com/shmup.re)
+![screenshot](./assets/screenshot.png)
 
-Admittedly, some of this code is pretty gnarly (it's my first Reason/Ocaml program). Feedback and
+Admittedly, some of this code is pretty gnarly (it's my first ReScript program). Feedback and
 pull requests are welcome!
 
-Also, if you want to make something similar, the [canvas2d bindings](https://github.com/BuckleTypes/bs-webapi-incubator/blob/master/src/gl/canvas2dRe.re) used here were extracted and merged into the [bs-webapi](https://github.com/BuckleTypes/bs-webapi-incubator) project.
+Also, if you want to make something similar, the
+[canvas2d bindings](https://github.com/tinymce/rescript-webapi) used here were extracted and merged into the
+[rescript-webapi](https://github.com/tinymce/rescript-webapi) project.
 
 
-## More Reason Resources
+## More ReScript Resources
 
-* [Official docs](https://facebook.github.io/reason)
-* [An Introduction to Reason](https://kennetpostigo.gitbooks.io/an-introduction-to-reason/)
+* [Official docs](https://rescript-lang.org/docs/manual/latest/api)
+* [An Introduction to ReScript](https://rescript-lang.org/docs/manual/latest/introduction)
