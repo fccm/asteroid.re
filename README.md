@@ -1,4 +1,4 @@
-# shmup.re
+# asteroid.re
 
 In which I attempt to learn [ReScript](https://rescript-lang.org/) by making a simple canvas game.
 [Play it online](https://fccm.github.io/shmup.re/)
